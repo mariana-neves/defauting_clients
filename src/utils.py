@@ -94,43 +94,6 @@ def add_state_region(df, json_file_path):
     return df
 
 
-def replace_zero_func(df, row):
-    """
-    Replace zero values in the 'NO_FUNCIONARIOS' column for a given client
-    with the most recent non-zero value for that client in the DataFrame.
-
-    This function is designed to address cases where a company's number of employees ('NO_FUNCIONARIOS')
-    is recorded as zero, which might be incorrect. It searches for the most recent non-zero value
-    for that client (identified by 'ID_CLIENTE') in the dataset and replaces the zero value with that.
-
-    Arguments:
-    ----------
-    df : pandas.DataFrame
-        The DataFrame containing client data. It must have columns 'ID_CLIENTE', 'NO_FUNCIONARIOS', 
-        and 'SAFRA_REF' (representing the time period). This DataFrame is used to search for non-zero 
-        values to replace zeros.
-
-    row : pandas.Series
-        A single row of the DataFrame (as passed by pandas apply function) containing the client's data 
-        for which the zero value in 'NO_FUNCIONARIOS' should be replaced.
-
-    Returns:
-    --------
-    int
-        The most recent non-zero number of employees for the given client ('ID_CLIENTE').
-        If no such value exists, the original zero value is returned.
-    """
-    client_id = row['ID_CLIENTE']
-    # Get the relevant data for the client
-    client_data = df[(df['ID_CLIENTE'] == client_id) & (df['NO_FUNCIONARIOS'] != 0)]
-    
-    if not client_data.empty:
-        # Sort by SAFRA_REF to find the most recent non-zero NO_FUNCIONARIOS
-        most_recent = client_data.sort_values(by='SAFRA_REF', ascending=False).iloc[0]
-        return most_recent['NO_FUNCIONARIOS']
-    return int(row['NO_FUNCIONARIOS'])
-
-
 # def dummys_KNN(df):  
 #     encoders = {}
 #     for col in df.columns:
